@@ -30,7 +30,7 @@ npm install apidoc -g
 apidoc -i routes/ -o apidoc/ 
 ```
 ### Open API docs
-https://vast-gorge-37663.herokuapp.com/api
+https://divvy-app.herokuapp.com/api/
 
 ## Run Development server
 ```
