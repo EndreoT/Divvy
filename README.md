@@ -15,7 +15,7 @@ _Divvy_ is a bill splitting application for those sharing a home space. Divvy ma
 Upon page load, the user is asked to either sign in or make an account. Post logging in, the user can create bills and add other payers to the bill using their email addresses. Each bill entered will include the bill title, bill company, price of bill and specific amount each email address entered owes. There is a _settle up_ option included on the page which links the user to venmo.
 
 # Results
-_Divvy_ implements a MySQL database to store user profiles, bills, and user-bill associations by using Sequelize.js as an object relational Mapper. A RESTful API is exposed on an express.js server. Extensive API documentation on the REST routes are also available for viewing.
+_Divvy_ implements a MySQL database to store user profiles, bills, and user-bill associations by using Sequelize.js as an Object Relational Mapper. A RESTful API is exposed on an express.js server. Extensive API documentation on the REST routes is also available for viewing.
 
 # API Docs
 
