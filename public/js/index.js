@@ -56,6 +56,13 @@ $(document).ready(function () {
   // Ajax functions
   // ***************************************
 
+  function alertModal(title, body) {
+    // Display error message to the user in a modal
+    $('#alert-modal-title').html(title);
+    $('#alert-modal-body').html(body);
+    $('#alert-modal').show();
+  }
+
   // Sign in
   function signIn(userData, callback) {
     const queryUrl = baseUrl + 'api/auth/';
@@ -104,7 +111,7 @@ $(document).ready(function () {
     const youOweCell = $('<td>').text(bill.UserBill.amountOwed);
     const addPayersBtn = $('<button type="button" class="btn btn-outline-light addPayers">Add payers</button>');
     const billDetailBtn = $('<button type="button" class="btn btn-outline-light viewBill">View Bill</button>');
-    const settle = $('<button type="button" class="btn btn-outline-light settle">Pay bill</button>');
+    const settle = $('<a class="btn btn-outline-light settle" role="button" href="https://venmo.com/" target="_blank">Pay bill</a>');
     tableRow
       .append(tableHead, titleCell, companyCell, amountCell, youOweCell, isPaidCell, addPayersBtn, billDetailBtn, settle);
     destination.append(tableRow);
@@ -143,12 +150,12 @@ $(document).ready(function () {
   // Adds a table row in adding a user to a bill modal
   function buildAddUserToBillTableRow(user, payerClass) {
     const userDiv = $('<div>').addClass(payerClass);
-    const firstNameElem = $('<tr><td>' + user.firstName + '</tr></td>').attr('firstName', user.firstName);
-    const lastNameElem = $('<tr><td>' + user.lastName + '</tr></td>').attr('last-name', user.lastName);
-    const userEmailElem = $('<tr><td>' + user.email + '</tr></td>').attr('email', user.email);
+    const firstNameElem = $('<tr><td>' + 'First name: ' + user.firstName + '</tr></td>').attr('firstName', user.firstName);
+    const lastNameElem = $('<tr><td>' + 'Last name: ' + user.lastName + '</tr></td>').attr('last-name', user.lastName);
+    const userEmailElem = $('<tr><td>' + 'Email: ' + user.email + '</tr></td>').attr('email', user.email);
     let amountOwedElem;
     if (user.amountOwed) {
-      amountOwedElem = $('<tr><td>' + user.amountOwed + '</tr></td>').attr('amountOwed', user.amountOwed);
+      amountOwedElem = $('<tr><td>' + 'Amount owed: $' + user.amountOwed + '</tr></td>').attr('amountOwed', user.amountOwed);
     } else {
       amountOwedElem = $('');
     }
@@ -202,19 +209,16 @@ $(document).ready(function () {
       });
   }
 
-
-
-
   // Constructs a user row in the bill detail view modal table
   function buildRowsBillDetail(payers) {
     $('.bill-payer-detail').remove();
 
     payers.forEach(payer => {
       const payerDiv = $('<div>').addClass('bill-payer-detail');
-      const firstNameElem = $('<tr><td>' + payer.firstName + '</tr></td>');
-      const lastNameElem = $('<tr><td>' + payer.lastName + '</tr></td>');
-      const userEmailElem = $('<tr><td>' + payer.email + '</tr></td>');
-      const amountPayerOwesElem = $('<tr><td>' + payer.UserBill.amountOwed + '</tr></td>');
+      const firstNameElem = $('<tr><td>' + 'First name: ' + payer.firstName + '</tr></td>');
+      const lastNameElem = $('<tr><td>' + 'Last name: ' + payer.lastName + '</tr></td>');
+      const userEmailElem = $('<tr><td>' + 'Email: ' + payer.email + '</tr></td>');
+      const amountPayerOwesElem = $('<tr><td>' + 'Amount owed: $' + payer.UserBill.amountOwed + '</tr></td>');
       var line = $('<div>').append('<hr>');
       payerDiv.append(firstNameElem, lastNameElem, userEmailElem, amountPayerOwesElem, line);
 
@@ -248,7 +252,7 @@ $(document).ready(function () {
         buildAddUserToBillTableRow(user, 'add-payer-user');
       } else {
         alert('Email address not found. Please have user make an account.');
-        console.log('user email does not exist');
+        console.log('User email does not exist');
       }
     });
   }
@@ -271,7 +275,6 @@ $(document).ready(function () {
     }
   }
 
-
   // ***************************************
   // Onclick handler functions
   // ***************************************
@@ -288,6 +291,12 @@ $(document).ready(function () {
     modal2.style.display = 'none';
     billDetailModal.style.display = 'none';
   };
+
+  // Close alert modal
+  $('#close-alert-modal').click(function(event) {
+    event.preventDefault();
+    $('#alert-modal').hide();
+  });
 
   // Handle sign in on click
   signInElem.click(function (event) {
@@ -324,6 +333,11 @@ $(document).ready(function () {
       amountYouOwe: $('#price-you-owe').val(),
     };
 
+    //if amount you owe > amount throw error
+    if (billData.Amount < billData.amountYouOwe) {
+      alertModal('Error.', 'Bill total must be less than amount owed.');
+      return;
+    }
 
     createBill(billData);
     $('#inputbill').val('');
@@ -353,7 +367,7 @@ $(document).ready(function () {
     addUsersToBillElem.attr('data-id', billId);
 
     const user = getAuthState();
-    buildAddUserToBillTableRow(user,'bill-creater');
+    buildAddUserToBillTableRow(user, 'bill-creater');
 
     $('#modal2').show();
   });
@@ -385,8 +399,24 @@ $(document).ready(function () {
     });
   });
 
+  // STILL WORKING ON THIS -RAMON //
+  // $("#settleBill").on("click", function(){
+  //   location.replace("https://venmo.com/");
+  //  });
+  // $('#settleBill').click(function(){
+  //   console.log('hi');
+  //   location.replace('https://venmo.com/');
+  // });
+  // $('#settleBill').on('click', '.link', function() {
+  //   $("#link").append('<a href="#" class="link"> Link </a>');
+  // });
+
+  // $('#settleBill').html('<a href="#" class="link">Link</a>');
+
+
+
   // On click function to exit out of #myModal
-  $('#myModalExit').on('click', function() {
+  $('#myModalExit').on('click', function () {
     $('#myModal').remove();
     location.reload();
   });
